@@ -19,8 +19,13 @@ RUN if ! apt-get install -y docker-ce-cli; then \
     fi
 
 # 5. Configurar permissões
+RUN groupadd -g 1000 docker && \
+    useradd -u 1000 -g jenkins -d /var/jenkins_home jenkins
 RUN usermod -aG docker jenkins && \
     chmod 666 /var/run/docker.sock || true
+RUN mkdir -p /var/jenkins_home && \
+    chown -R 1000:1000 /var/jenkins_home && \
+    chmod -R 755 /var/jenkins_home
 
 # 6. Voltar para o usuário jenkins
 USER jenkins
